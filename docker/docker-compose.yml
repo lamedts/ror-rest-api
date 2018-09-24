@@ -1,0 +1,34 @@
+version: '3.3'
+services:
+  # yay:
+  #   hostname: yay
+  #   container_name: ror-rest-api
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - mysql
+  #     - mongodb
+  #   environment:
+  #     WAIT_HOSTS: mysql:3306
+  #     MYSQL_HOST: mysql
+  #     MONGODB_HOST: mongodb
+  mysql:
+    hostname: mysql
+    container_name: ror-rest-api-mysql
+    image: mysql:8.0.3
+    restart: always
+    ports:
+      - 3306:3306
+    command: --init-file /docker-entrypoint-initdb.d/mysql-setup.sql
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: yay
+      MYSQL_DATABASE: yay
+
+volumes:  
+  mysql_data:
