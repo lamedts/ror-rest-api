@@ -1,0 +1,3 @@
+Controller specs - A controller spec is an RSpec wrapper for a Rails functional test. It allows you to simulate a single http request in each example, and then specify expected outcomes
+
+Request specs - Request specs provide a thin wrapper around Rails' integration tests, and are designed to drive behavior through the full stack, including routing (provided by Rails) and without stubbing (that's up to you).
