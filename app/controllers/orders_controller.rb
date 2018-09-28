@@ -1,3 +1,6 @@
+require 'net/http'
+require 'json'
+
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :update, :destroy]
 
@@ -10,10 +13,11 @@ class OrdersController < ApplicationController
   # POST /orders
   def create
 
+    distance_obj = get_distance(order_params[:origin_lat], order_params[:origin_long], order_params[:destination_lat], order_params[:destination_lat])
     @order = Order.create!({ status: order_params[:status] })
     @origin = Origin.create!({ 
-      latitude: order_params[:destination_lat], 
-      longtitude: order_params[:destination_lat],
+      latitude: order_params[:origin_lat], 
+      longtitude: order_params[:origin_long],
       order_id: @order.id
     })
     @destination = Destination.create!({ 
@@ -52,4 +56,20 @@ class OrdersController < ApplicationController
   def set_order
     @order = Order.find(params[:id])
   end
+
+  def self.get_distance(origin_lat, origin_long, destination_lat, destination_long)
+    origin_coord = "#{origin_lat},#{origin_long}"
+    destination_coord = "#{destination_lat},#{destination_long}"
+    google_api_key = Settings.google_api_key
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin=#{origin_coord}&destination=#{destination_coord}&key=#{google_api_key}"
+    response = Net::HTTP.get(URI(url))
+    responseJson = JSON.parse(response)
+    if responseJson.route != [] 
+      puts responseJson[0].distance.value
+    end
+    
+
+    JSON.parse(response)
+  end
+  
 end
